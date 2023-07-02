@@ -40,6 +40,24 @@ impl iced_button::StyleSheet for IcedwaitaTheme {
     type Style = Button;
 
     fn active(&self, style: &Self::Style) -> Appearance {
-        todo!()
+        appearance(style, self.is_dark_theme)
+    }
+}
+
+impl iced_button::StyleSheet for Button {
+    type Style = iced_native::Theme;
+
+    fn active(&self, style: &Self::Style) -> Appearance {
+        match style {
+            iced_native::Theme::Custom(..) | iced_native::Theme::Dark => appearance(self, true),
+            iced_native::Theme::Light => appearance(self, false)
+        }
+
+    }
+}
+
+impl From<Button> for iced_native::theme::Button {
+    fn from(value: Button) -> Self {
+        iced_native::theme::Button::Custom(Box::new(value))
     }
 }

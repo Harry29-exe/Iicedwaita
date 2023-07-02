@@ -1,5 +1,7 @@
-use iced::{Element, Settings, Sandbox};
-use iced::widget::{container, row, text, column};
+use iced::{Element, Settings, Sandbox, Alignment};
+use iced::Length::Fill;
+use iced::widget::{container, row, text, column, Row};
+use iced_native::widget::button;
 
 
 fn main() {
@@ -28,17 +30,43 @@ impl iced::Sandbox for Application {
     }
 
     fn view(&self) -> Element<'_, Self::Message> {
+        let hello_world = self.hello_world_line();
+
+        let default_btn = button("Default")
+            .style(icedwaita::style::Button::Default.into());
+        let primary_btn = button("Primary")
+            .style(icedwaita::style::Button::Primary.into());
+
+        let buttons_row = row![default_btn, primary_btn];
+
+        column![hello_world, buttons_row]
+            .into()
+    }
+
+
+
+}
+
+impl Application {
+    fn hello_world_line<'a>(&self) -> Row<'a, ()> {
         let hello = container(text("Hello"))
-            .style(icedwaita::style::components::Container::WithBorder)
+            .style(icedwaita::style::Container::WithBorder)
             .padding(icedwaita::style::size::padding::MD);
 
+        let spaccing = container(text(""))
+            .width(Fill);
         let world = container(text("World"))
-            .style(icedwaita::style::components::Container::Default)
+            .style(icedwaita::style::Container::Default)
             .padding(icedwaita::style::size::padding::MD);
 
-        column![
+        let hello_world = row![
             hello,
+            spaccing,
             world
-        ].into()
+        ]
+            .width(Fill)
+            .align_items(Alignment::Center);
+
+        hello_world.into()
     }
 }

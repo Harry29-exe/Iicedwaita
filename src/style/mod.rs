@@ -4,6 +4,7 @@ pub struct IcedwaitaTheme {
 
 mod components;
 pub use components::Container;
+pub use components::Button;
 
 
 pub mod size {

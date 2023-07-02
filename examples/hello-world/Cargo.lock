@@ -962,6 +962,7 @@ name = "hello-world"
 version = "0.1.0"
 dependencies = [
  "iced",
+ "iced_native",
  "icedwaita",
 ]
 
