@@ -18,7 +18,8 @@ fn appearance(style: &Button, is_dark: bool) -> iced_button::Appearance {
     match style {
         Button::Default => default_appearance(pallete),
         Button::Primary => iced_button::Appearance {
-            background: Option::Some(Background::Color(pallete.accent_bg_color)),
+            background: Option::Some(Background::Color(pallete.accent_color)),
+            text_color: pallete.accent_fg_color,
             ..default_appearance(pallete)
         }
     }

@@ -1,6 +1,7 @@
 use iced::{Element, Settings, Sandbox, Alignment};
 use iced::Length::Fill;
 use iced::widget::{container, row, text, column, Row};
+use iced_native::Padding;
 use iced_native::widget::button;
 
 
@@ -33,11 +34,23 @@ impl iced::Sandbox for Application {
         let hello_world = self.hello_world_line();
 
         let default_btn = button("Default")
-            .style(icedwaita::style::Button::Default.into());
-        let primary_btn = button("Primary")
-            .style(icedwaita::style::Button::Primary.into());
+            .style(icedwaita::style::Button::Default.into())
+            .padding(Padding::new(15.))
+            .on_press(());
 
-        let buttons_row = row![default_btn, primary_btn];
+        let default_btn_wrapper = container(default_btn)
+            .padding(Padding::from([5., 10.]));
+
+        let primary_btn = button("Primary")
+            .style(icedwaita::style::Button::Primary.into())
+            .padding(Padding::new(15.))
+            .on_press(());
+
+        let primary_btn_wrapper = container(primary_btn)
+            .padding(Padding::from([5., 10.]));
+
+        let buttons_row = row![default_btn_wrapper, primary_btn_wrapper]
+            .padding(Padding::from([8., 0.]));
 
         column![hello_world, buttons_row]
             .into()
@@ -69,4 +82,5 @@ impl Application {
 
         hello_world.into()
     }
+
 }
