@@ -1,5 +1,12 @@
 use iced_native::{Background, Color};
+use palette::{Blend};
+use palette::encoding::Linear;
 use crate::style::colors::basics::*;
+use palette::rgb::{Rgb, Rgba};
+use palette::encoding::Srgb;
+use crate::style::alpha::Alpha;
+
+pub type Srgba<T = f32> = Rgba<palette::encoding::Srgb, T>;
 
 pub fn get_colors(dark_theme: bool) -> &'static IcedwaitaColors {
     if dark_theme {
@@ -12,18 +19,23 @@ pub fn get_colors(dark_theme: bool) -> &'static IcedwaitaColors {
 #[inline]
 pub fn mix(c1: &Color, c2: &Color, ratio: f32) -> Color {
     let inverse_ratio = 1. - ratio;
-    let raw1 = c1.into_linear();
-    let raw2 = c2.into_linear();
-    Color {
+    let raw1 = Srgba::from(*c1).into_linear();
+    let raw2 = Srgba::from(*c2).into_linear();
+
         // r: f32::sqrt((c1.r * c1.r * ratio) + (c2.r * c2.r * inverse_ratio)),
         // g: f32::sqrt((c1.g * c1.g * ratio) + (c2.g * c2.g * inverse_ratio)),
         // b: f32::sqrt((c1.b * c1.b * ratio) + (c2.b * c2.b * inverse_ratio)),
         // a: (c1.a * ratio) + (c2.a * inverse_ratio),
-        r: raw1[0] * ratio + raw2[0] * inverse_ratio,
-        g: raw1[1] * ratio + raw2[1] * inverse_ratio,
-        b: raw1[2] * ratio + raw2[2] * inverse_ratio,
-        a: (c1.a * ratio) + (c2.a * inverse_ratio),
-    }
+    let result : palette::Alpha<palette::rgb::Rgb<Linear<Srgb>, f32>, f32> = Rgba::new(
+        raw1.red * ratio + raw2.red * inverse_ratio,
+        raw1.green * ratio + raw2.green * inverse_ratio,
+        raw1.blue * ratio + raw2.blue * inverse_ratio,
+        raw1.alpha * ratio + raw2.alpha * inverse_ratio,
+    );
+    let result_non_linear = Srgba::from_linear(result);
+    let color = Color::from(result_non_linear);
+    println!("{:?}", color);
+    color
 }
 
 #[inline]

@@ -34,7 +34,7 @@ fn appearance(style: &Button, is_dark: bool) -> iced_button::Appearance {
         },
         Button::PrimaryExt{checked} => iced_button::Appearance {
             background: match checked {
-                true => alpha::CHECKED.mix_into_some_bg(&pallete.accent_color, &pallete.accent_fg_color),
+                true => alpha::CHECKED.mix_into_some_bg(&pallete.accent_bg_color, &pallete.accent_fg_color),
                 false => None
             },
             text_color: pallete.accent_fg_color,

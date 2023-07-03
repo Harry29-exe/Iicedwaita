@@ -45,7 +45,7 @@ pub struct Alpha {
 impl Alpha {
     pub fn color(&self, c: &Color) -> Color {
         Color {
-            a: self.a,
+            a: c.a * self.a,
             ..(*c)
         }
     }
