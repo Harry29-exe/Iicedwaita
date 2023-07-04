@@ -22,7 +22,7 @@ fn appearance(style: &Button, is_dark: bool) -> iced_button::Appearance {
         Button::Default => default_appearance(pallete),
         Button::DefaultExt{checked} => iced_button::Appearance {
             background: match checked {
-                true => alpha::CHECKED.to_some_bg(&pallete.window_fg_color),
+                true => alpha::CHECKED.to_some_bg(&pallete.transparent_mix_color),
                 false => None
             },
             ..default_appearance(pallete)
@@ -47,24 +47,24 @@ fn appearance_hower(style: &Button, is_dark: bool) -> iced_button::Appearance {
     let pallete = get_colors(is_dark);
     match style {
         Button::Default => iced_button::Appearance {
-            background: alpha::HOVER.to_some_bg(&pallete.window_fg_color),
+            background: alpha::HOVER.to_some_bg(&pallete.transparent_mix_color),
             ..default_appearance(pallete)
         },
         Button::DefaultExt{checked} => iced_button::Appearance {
-            background: alpha::for_hover(*checked).to_some_bg(&pallete.window_fg_color),
+            background: alpha::for_hover(*checked).to_some_bg(&pallete.transparent_mix_color),
             ..default_appearance(pallete)
         },
         Button::Primary => iced_button::Appearance {
             background: alpha::HOVER.mix_into_some_bg(
                 &pallete.accent_bg_color,
-                &pallete.accent_fg_color),
+                &pallete.transparent_mix_color),
             text_color: pallete.accent_fg_color,
             ..default_appearance(pallete)
         },
         Button::PrimaryExt {checked} => iced_button::Appearance {
             background: alpha::for_hover(*checked).mix_into_some_bg(
                 &pallete.accent_bg_color,
-                &pallete.accent_fg_color),
+                &pallete.transparent_mix_color),
             text_color: pallete.accent_fg_color,
             ..default_appearance(pallete)
         }
@@ -75,24 +75,24 @@ fn appearance_pressed(style: &Button, is_dark: bool) -> iced_button::Appearance 
     let pallete = get_colors(is_dark);
     match style {
         Button::Default => iced_button::Appearance {
-            background: alpha::ACTIVE.to_some_bg(&pallete.window_fg_color),
+            background: alpha::ACTIVE.to_some_bg(&pallete.transparent_mix_color),
             ..default_appearance(pallete)
         },
         Button::DefaultExt{checked} => iced_button::Appearance {
-            background: alpha::for_active(*checked).to_some_bg(&pallete.window_fg_color),
+            background: alpha::for_active(*checked).to_some_bg(&pallete.transparent_mix_color),
             ..default_appearance(pallete)
         },
         Button::Primary => iced_button::Appearance {
             background: alpha::ACTIVE.mix_into_some_bg(
                 &pallete.accent_bg_color,
-                &pallete.accent_fg_color),
+                &colors::basics::DARK_5),
             text_color: pallete.accent_fg_color,
             ..default_appearance(pallete)
         },
         Button::PrimaryExt {checked} => iced_button::Appearance {
             background: alpha::for_active(*checked).mix_into_some_bg(
                 &pallete.accent_bg_color,
-                &pallete.accent_fg_color),
+                &colors::basics::DARK_5),
             text_color: pallete.accent_fg_color,
             ..default_appearance(pallete)
         }

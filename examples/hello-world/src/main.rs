@@ -7,6 +7,7 @@ use iced_native::Length::FillPortion;
 use iced_native::widget::button;
 use crate::AppMessage::NOOP;
 
+mod section;
 
 fn main() {
     Application::run(Settings::default());

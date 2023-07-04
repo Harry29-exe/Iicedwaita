@@ -84,7 +84,9 @@ pub struct IcedwaitaColors {
     pub thumbnail_fg_color: Color,
     pub shade_color: Color,
     pub scrollbar_outline_color: Color,
+    pub transparent_mix_color: Color,
 }
+
 
 pub const DARK: IcedwaitaColors = IcedwaitaColors {
     text_color: WHITE,
@@ -124,6 +126,7 @@ pub const DARK: IcedwaitaColors = IcedwaitaColors {
     thumbnail_fg_color: WHITE,
     shade_color: Color::from_rgba(0., 0., 0., 0.36),
     scrollbar_outline_color: Color::from_rgba(0., 0., 0., 0.5),
+    transparent_mix_color: Color::from_rgba(0.5, 0.5, 0.5, 1.),
 };
 
 pub const LIGHT: IcedwaitaColors = IcedwaitaColors {
@@ -164,6 +167,7 @@ pub const LIGHT: IcedwaitaColors = IcedwaitaColors {
     thumbnail_fg_color: Color::from_rgba(0., 0., 0., 0.8),
     shade_color: Color::from_rgba(0., 0., 0., 0.07),
     scrollbar_outline_color: WHITE,
+    transparent_mix_color: Color::from_rgba(0.5, 0.5, 0.5, 1.0),
 };
 
 pub mod basics {

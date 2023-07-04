@@ -1,9 +1,9 @@
 use iced::Color;
 use crate::style::colors;
 
-pub const HOVER: Alpha = Alpha { a: 0.15 };
-pub const ACTIVE: Alpha = Alpha { a: 0.3 };
-pub const CHECKED: Alpha = Alpha { a: 0.30 };
+pub const HOVER: Alpha = Alpha { a: 0.15 };//0.15 | 0.07
+pub const ACTIVE: Alpha = Alpha { a: 0.30 }; //0.3 | 0.16
+pub const CHECKED: Alpha = Alpha { a: 0.30 }; //0.3
 pub const CHECKED_HOVER: Alpha = Alpha{a: 0.35};
 pub const CHECKED_ACTIVE: Alpha = Alpha { a: 0.4 };
 
@@ -53,7 +53,7 @@ impl Alpha {
     pub fn to_some_bg(&self, c: &Color) -> Option<iced_native::Background> {
         Some(iced_native::Background::from(
             Color {
-                a: self.a,
+                a: 1.-self.a,
                 ..(*c)
             }
         ))
