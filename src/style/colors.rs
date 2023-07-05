@@ -18,24 +18,87 @@ pub fn get_colors(dark_theme: bool) -> &'static IcedwaitaColors {
 
 #[inline]
 pub fn mix(c1: &Color, c2: &Color, ratio: f32) -> Color {
-    let inverse_ratio = 1. - ratio;
-    let raw1 = Srgba::from(*c1).into_linear();
-    let raw2 = Srgba::from(*c2).into_linear();
+    // let inverse_ratio = 1. - ratio;
+    // let raw1 = Srgba::from(*c1).into_linear();
+    // let raw2 = Srgba::from(*c2).into_linear();
+    //
+    // println!("raw1: {} {} {}", raw1.red, raw1.green, raw1.blue);
+    // println!("raw2: {} {} {}", raw2.red, raw2.green, raw2.blue);
+    //     // r: f32::sqrt((c1.r * c1.r * ratio) + (c2.r * c2.r * inverse_ratio)),
+    //     // g: f32::sqrt((c1.g * c1.g * ratio) + (c2.g * c2.g * inverse_ratio)),
+    //     // b: f32::sqrt((c1.b * c1.b * ratio) + (c2.b * c2.b * inverse_ratio)),
+    //     // a: (c1.a * ratio) + (c2.a * inverse_ratio),
+    // let result : palette::Alpha<palette::rgb::Rgb<Linear<Srgb>, f32>, f32> = Rgba::new(
+    //     raw1.red * ratio * raw1.alpha + raw2.red * inverse_ratio * raw2.alpha,
+    //     raw1.green * ratio * raw1.alpha + raw2.green * inverse_ratio  * raw2.alpha,
+    //     raw1.blue * ratio * raw1.alpha + raw2.blue * inverse_ratio  * raw2.alpha,
+    //     raw1.alpha * ratio + raw2.alpha * inverse_ratio,
+    // );
+    // let result_non_linear = Srgba::from_linear(result);
+    // let color = Color::from(result_non_linear);
+    // println!("{:?}", color);
+    // color
+    let w = 2. * ratio - 1.; //mix function from sass
+    let a = c1.a - c2.a;
+    let w1= ((if w * a == -1. { w } else {(w + a)/(1. + w*a)}) + 1.)/2.0;
+    let w2 = 1. - w1;
 
-        // r: f32::sqrt((c1.r * c1.r * ratio) + (c2.r * c2.r * inverse_ratio)),
-        // g: f32::sqrt((c1.g * c1.g * ratio) + (c2.g * c2.g * inverse_ratio)),
-        // b: f32::sqrt((c1.b * c1.b * ratio) + (c2.b * c2.b * inverse_ratio)),
-        // a: (c1.a * ratio) + (c2.a * inverse_ratio),
-    let result : palette::Alpha<palette::rgb::Rgb<Linear<Srgb>, f32>, f32> = Rgba::new(
-        raw1.red * ratio + raw2.red * inverse_ratio,
-        raw1.green * ratio + raw2.green * inverse_ratio,
-        raw1.blue * ratio + raw2.blue * inverse_ratio,
-        raw1.alpha * ratio + raw2.alpha * inverse_ratio,
-    );
-    let result_non_linear = Srgba::from_linear(result);
-    let color = Color::from(result_non_linear);
-    println!("{:?}", color);
-    color
+    Color {
+        r: w1 * c1.r + w2 * c2.r,
+        g: w1 * c1.g + w2 * c2.g,
+        b: w1 * c1.b + w2 * c2.b,
+        a: c1.a * ratio + c2.a *(1.-ratio)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use iced_native::Color;
+    use crate::style::colors::mix;
+
+    #[test]
+    fn mix_alpha_color() {
+        let c1 = Color::from_rgba8(242, 236, 228, 0.5);
+        let c2 = Color::from_rgba8(107, 113, 127, 1.0);
+
+        let mix_c = mix(&c1, &c2, 0.5).into_rgba8();
+        assert_eq!(mix_c[0], 141);
+        assert_eq!(mix_c[1], 144);
+        assert_eq!(mix_c[2], 152);
+    }
+
+    #[test]
+    fn mix_with_0_75_ratio() {
+        let c1 = Color::from_rgba8(0, 51, 102, 1.0);
+        let c2 = Color::from_rgba8(210, 225, 221, 1.0);
+
+        let mix_c = mix(&c1, &c2, 0.75).into_rgba8();
+        assert_eq!(mix_c[0], 53);
+        assert_eq!(mix_c[1], 95);
+        assert_eq!(mix_c[2], 132);
+    }
+
+    #[test]
+    fn mix_with_0_25_ratio() {
+        let c1 = Color::from_rgba8(0, 51, 102, 1.0);
+        let c2 = Color::from_rgba8(210, 225, 221, 1.0);
+
+        let mix_c = mix(&c1, &c2, 0.25).into_rgba8();
+        assert_eq!(mix_c[0], 158);
+        assert_eq!(mix_c[1], 182);
+        assert_eq!(mix_c[2], 191);
+    }
+
+    #[test]
+    fn mix_with_0_5_ratio() {
+        let c1 = Color::from_rgba8(0, 51, 102, 1.0);
+        let c2 = Color::from_rgba8(210, 225, 221, 1.0);
+
+        let mix_c = mix(&c1, &c2, 0.5).into_rgba8();
+        assert_eq!(mix_c[0], 105);
+        assert_eq!(mix_c[1], 138);
+        assert_eq!(mix_c[2], 162);
+    }
 }
 
 #[inline]
@@ -84,9 +147,30 @@ pub struct IcedwaitaColors {
     pub thumbnail_fg_color: Color,
     pub shade_color: Color,
     pub scrollbar_outline_color: Color,
-    pub transparent_mix_color: Color,
+    pub opaque_el_mix_color: Color,
 }
 
+impl IcedwaitaColors {
+    pub fn opaque_mixcol(&self) -> Color {
+        // println!("{}", (self.window_fg_color.r * 0.15 + self.window_bg_color.r * 0.85));
+        // Color {
+        //     r: self.window_bg_color.r * 0.15 + self.window_fg_color.r * 0.85,
+        //     g: self.window_bg_color.g * 0.15 + self.window_fg_color.g * 0.85,
+        //     b: self.window_bg_color.b * 0.15 + self.window_fg_color.b * 0.85,
+        //     a: self.window_bg_color.a * 0.15 + self.warning_fg_color.a * 0.85,
+        // }
+
+        // let mut fg = self.window_fg_color.clone();
+        // fg.a = 1.0;
+        // c.a = 1.0;
+        // fg.a = 1.0;
+        let mut mixc = mix(&self.window_bg_color, &self.window_fg_color, 0.15);
+        // let mut finalc = mix(&basics::DARK_5, &mixc, 1. - 0.85);
+        // println!("{:?}", mixc);
+        // mixc.a = 1.0;
+        mixc
+    }
+}
 
 pub const DARK: IcedwaitaColors = IcedwaitaColors {
     text_color: WHITE,
@@ -126,7 +210,7 @@ pub const DARK: IcedwaitaColors = IcedwaitaColors {
     thumbnail_fg_color: WHITE,
     shade_color: Color::from_rgba(0., 0., 0., 0.36),
     scrollbar_outline_color: Color::from_rgba(0., 0., 0., 0.5),
-    transparent_mix_color: Color::from_rgba(0.5, 0.5, 0.5, 1.),
+    opaque_el_mix_color: Color::from_rgba(0.52, 0.52, 0.52, 1.),
 };
 
 pub const LIGHT: IcedwaitaColors = IcedwaitaColors {
@@ -146,12 +230,12 @@ pub const LIGHT: IcedwaitaColors = IcedwaitaColors {
     error_bg_color: RED_3,
     error_fg_color: WHITE,
     error_color: RED_4,
-    window_bg_color: Color::from_rgb(0.9803921568627451, 0.9803921568627451, 0.9803921568627451),
+    window_bg_color: Color::from_rgb(0.980_392_16, 0.980_392_16, 0.980_392_16),
     window_fg_color: Color::from_rgba(0., 0., 0., 0.8),
     border_color: Color::from_rgba(0., 0., 0., 0.15), //window_fg_color with 15% alpha
     view_bg_color: Color::from_rgb(1.0, 1.0, 1.0),
     view_fg_color: Color::from_rgba(0., 0., 0., 0.8),
-    header_bar_bg_color: Color::from_rgb(0.9215686274509803, 0.9215686274509803, 0.9215686274509803),
+    header_bar_bg_color: Color::from_rgb(0.921_568_63, 0.921_568_63, 0.921_568_63),
     header_bar_fg_color: Color::from_rgba(0., 0., 0., 0.8),
     header_bar_border_color: Color::from_rgba(0., 0., 0., 0.8),
     header_bar_backdrop_color: Color::from_rgb(0.9803921568627451, 0.9803921568627451, 0.9803921568627451), //window_bg_color
@@ -167,7 +251,7 @@ pub const LIGHT: IcedwaitaColors = IcedwaitaColors {
     thumbnail_fg_color: Color::from_rgba(0., 0., 0., 0.8),
     shade_color: Color::from_rgba(0., 0., 0., 0.07),
     scrollbar_outline_color: WHITE,
-    transparent_mix_color: Color::from_rgba(0.5, 0.5, 0.5, 1.0),
+    opaque_el_mix_color: Color::from_rgba(0.52, 0.52, 0.52, 1.0),
 };
 
 pub mod basics {

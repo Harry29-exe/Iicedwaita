@@ -56,7 +56,7 @@ impl iced::Sandbox for Application {
         container(col)
             .width(Fill)
             .height(Fill)
-            .style(icedwaita::style::Container::Default)
+            .style(icedwaita::style::Container::SizeBar)
             .into()
     }
 

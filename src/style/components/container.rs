@@ -1,4 +1,5 @@
 use iced::widget::container::Appearance;
+use iced_core::Color;
 use iced_native::{Background, theme, widget};
 use crate::style;
 use crate::style::{colors, IcedwaitaTheme};
@@ -8,6 +9,7 @@ pub enum Container {
     #[default]
     Default,
     WithBorder,
+    SizeBar,
 }
 
 fn appearance(style: &Container, dark_theme: bool) -> Appearance {
@@ -29,6 +31,17 @@ fn appearance(style: &Container, dark_theme: bool) -> Appearance {
             border_radius: style::border::radius::MD,
             ..Appearance::default()
         },
+        Container::SizeBar => Appearance {
+            text_color: Some(colors.text_color),
+            background: Some(Background::Color(colors.window_bg_color))
+                //primary: 0.921_568_63 //secondary: 0.952_941_2
+                //primary:0.188_235_3  // secondary: 0.164_705_89
+            ,
+            border_color: colors.border_color,
+            border_width: style::border::MD,
+            border_radius: style::border::radius::MD,
+            ..Appearance::default()
+        }
     }
 }
 
